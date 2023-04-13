@@ -8,21 +8,28 @@ SECTION .data
 	sintaxis	db	"El orden de los caracteres ingresados es incorrecto", 0h
 	aritmetico	db	"No se puede dividir por 0", 0h
 
-limite:
-	mov	eax, lexico
-	call	display_error
+SECTION .text
+
+mostrar_error:
+	mov		eax, limite
+	call	printError
 	ret
 
 lexico_mostrar:
 	mov	eax, lexico
-	call	display_error
+	call	printError
+	ret
+
+sintaxis_mostrar:
+	mov		eax, sintaxis
+	call	printError
 	ret
 
 aritmetico_mostrar:
 	mov	eax, aritmetico
-	call	display_error
+	call	printError
 	ret
 
-limite:
-	call	printLn
-	call	sys_exitx
+printError:
+	call	printIntLn
+	call	endP
