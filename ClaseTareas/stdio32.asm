@@ -1,3 +1,13 @@
+SECTION .data
+clear_str		db	    1Bh, '[2J', 1Bh, '[3J', 0h
+	goto_xy_str	    db	    1Bh, '[01;01H', 0h
+ msg_not_number     db      "El valor no contiene valores validos para numero", 0H
+ base_div			dd		10
+
+SECTION .bss
+    temporal:         resb        255
+
+SECTION .text
 
 ; --------------Calculo de longitud de cadena-------------------
 ; srtLen(eax=cadena) -> eax int n = longitud
@@ -138,6 +148,174 @@ cadena_numero:
         pop     ebx
         pop     ecx
         pop     edx
+    ret
+;------------------Función Goto xy--------------------------
+clear_screen:
+	mov	        eax, clear_str
+	call	    printStr
+	ret
+
+
+goto_xy:
+    mov	eax, goto_xy_str
+	mov	ebx, eax
+    .goto_xy_ciclo:
+        cmp	byte [ebx], 0       ; primero se revisa que no sea nulo
+    	jz	.goto_xy_ciclo_fin
+    	cmp	byte [ebx], '['
+    	je	.goto_xy_a_x
+    	cmp	byte [ebx], ';'
+    	je	.goto_xy_a_y
+    	inc	ebx
+    	jmp	.goto_xy_ciclo
+    .goto_xy_a_y:
+	    add	ebx, 2
+	    mov	byte [ebx], dl
+	    jmp	.goto_xy_ciclo
+    .goto_xy_a_x:
+	    add	ebx, 2
+	    mov 	byte [ebx], dh
+	    jmp 	.goto_xy_ciclo
+    .goto_xy_ciclo_fin:
+	    call	printStr
+	    int	80h
+    ret
+
+;-------------------Pedir valores en consola (INPUT)----------------
+Input:
+    ; copia de seguridad
+    push        edx
+    push        ecx
+    push        ebx
+
+    mov         eax, 3          
+    mov         ebx, 0          
+    mov         ecx, temporal     
+    mov         edx, 255        
+    int         80H             
+
+    ; Busca el salto de línea en el temporal
+    push        edi
+    mov         edi, ecx            
+    mov         ecx, eax            
+    xor         eax, eax            
+    cld                            
+    repne       scasb               
+    je          .replace_jumpline  
+
+    mov         byte [edi + ecx], 0H
+
+    .replace_jumpline:
+        mov         byte [edi + eax - 1], 0H     
+
+    pop         edi
+    pop         ebx
+    pop         ecx
+    pop         edx
+
+    mov         eax, temporal                    
+    ret
+
+;----------------Conversion------------------------
+cadena_a_entero:
+    .copia_s:
+        push        edx
+        push        ecx
+        push        ebx
+        push        esi
+
+    mov         ebx,0               
+    mov         esi, eax            
+
+    .recorrido:
+        movzx   edx, byte[esi]      ; cargar en edx el siguiente byte del string en cl
+        cmp     dl, 0               ; fin de caneda?
+        je      .oki
+
+        cmp     dl, 48              ; es menor a 0?
+        jl      .invalido
+        cmp     dl, 57              ; es mayor a 9?
+        jg      .invalido
+    
+        sub     dl, 48              ; cl -= ASCII('0')
+        imul    ebx, 10             ; multiplica el acumulador por 10
+        add     ebx, edx            ; sumamos el valur numerico al acumulador
+
+        inc     esi                 ; continuamos el recorrido
+        jmp     .recorrido
+
+    .invalido:
+        push        eax
+        mov         eax, msg_not_number
+        call        printStrLn
+        pop         eax
+
+    .oki:
+        mov     eax, ebx
+    
+    .devol:
+        pop     esi
+        pop     ebx
+        pop     ecx
+        pop     edx
+    ret
+
+
+entero_a_cadena:
+    .copia_s:
+        push        edx
+        push        ecx
+        push        ebx
+        push        esi
+    .iniciar:
+        mov         esi, temporal     ; guardamos los valores en el temporal
+        xor         ecx, ecx        ; reiniciamos el contador
+        
+        .recorrido:
+            cmp         eax, 0          ; numeros terminados
+            jle         .termin         ; termina bucle
+
+            xor         edx, edx        
+
+            mov         ebx, [base_div]
+            div         ebx
+
+            .posiciones:
+                add         dl, 48
+                mov         byte[esi], dl
+                inc         esi
+
+            jmp         .recorrido
+        .termin:
+            push        esi
+            .longitudcalc_cadena:  			 ; para calcular la longitud de la cadena
+                mov         eax, temporal
+                call        strLen
+                mov         edi, eax         
+
+            mov         esi, temporal         
+            lea         edi, [esi+edi-1]    
+            
+            .recorridoi:
+                mov         al, [esi]       ; carga el primer caracter
+                xchg        al, [edi]       ; intercambia el primer y ultimo valor
+                mov         [esi], al       ; guarda el caracter en el ulitmo lugar
+                inc         esi
+                dec         edi
+                cmp         esi, edi
+                jl          .recorridoi
+                
+
+        .end:
+            pop         esi
+            mov         byte[esi], 0H       ; la cadena termina en null
+            mov         eax, temporal         ; eax -> temporal
+
+    .devol:
+        pop         esi
+        pop         ebx
+        pop         ecx
+        pop         edx
     ret
 
 ;-------------------FIn de codigo-------------------------

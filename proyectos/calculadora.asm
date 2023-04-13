@@ -1,6 +1,7 @@
 ; Calculadora operaciones aritmeticas de dos digitos
 ; fecha: 08/04/2023
-; creador: Sjvn
+; Creadores: Mario Sajvin 1612921, Allan Perez 1501321,
+; Juan Marroquín 1689821, Diego Abdo 1625021
 
 %include '../ClaseTareas/stdio32.asm'
 %include 'errores.asm'
