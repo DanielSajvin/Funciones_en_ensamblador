@@ -3,16 +3,16 @@
 ; fecha: 29/03/2023
 ; Imprime el mensaje centrado en pantalla
 
-%inlcude 'stdio32.asm'
+%include 'stdio32.asm'
 
 SECTION .data
 	msg	db	'Arquitectura I!', 0h
 	posxy	db	1Bh, '[12;32H', 0h
-	strCls	db	1Bh, '[2J' 1Bh, '[3J', 0h
+	strCls	db	1Bh, '[2J', 1Bh, '[3J', 0h
 	strFin	db	1Bh, '[24; 1H', 0h
 
 SECTION .text
-	global_start
+	global _start
 
 _start:
 	mov	eax, strCls

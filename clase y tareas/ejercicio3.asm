@@ -1,3 +1,5 @@
+%include	'stdio32.asm'
+
 SECTION .data
 	msg db 'Hola Arquitectura I', 0Ah	; msg es la cadena 
 
@@ -21,19 +23,19 @@ _start:
 	push	ebx		; ebx en la pila
 	mov	ebx, eax	; mueve la direccion de la cadena ebx
 
-sigChar:
+.sigChar:
 	cmp	byte[eax], 0	; if msg(eax)== 0
-	jz	finLen		; 	saltar al final
+	jz	.finLen		; 	saltar al final
 	inc 	eax 
-	jmp	sigChar
+	jmp	.sigChar
 
-finLen:
-	sub	eax, bx
+.finLen:
+	sub	eax, ebx
 	pop	ebx
 	ret
 
 ;-------------------FIn de codigo-------------------------
-endP:
+.endP:
 	mov	ebx, 0		; return 0
 	mov	eax, 1		; llamar a SYS_EXIT 
 	int	80h

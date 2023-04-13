@@ -12,7 +12,7 @@ sigChar:
 	jmp	sigChar		; Len op
 
 finLen:
-	sub	eax, bx
+	sub	eax, ebx
 	pop	ebx
 	ret
 ;------------------Impresion en pantalla-----------------
@@ -74,7 +74,7 @@ printLoop:
 	call	printStr
 	pop	eax
 	cmp	ecx, 0
-	jnz	printLopp
+	jnz	printLoop
 	pop	esi
 	pop	edx
 	pop	ecx
@@ -84,7 +84,7 @@ printLoop:
 
 
 ;------------------Imprimir entero con salto de linea--------
-PrintIntLn:
+printIntLn:
 	call	printInt
 	push	eax
 	mov	eax, 0Ah

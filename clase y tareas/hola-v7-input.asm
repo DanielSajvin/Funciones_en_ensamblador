@@ -26,7 +26,7 @@ _start:
 	int 	80h
 
 	mov	eax, msg2
-	call	pintStr
+	call	printStr
 
 	mov	eax, nombre
 	call	printStrLn

@@ -8,9 +8,9 @@ SECTION .data
 	suma	db	'Suma: ', 0h
 	resta	db	'Resta: ', 0h
 	multi	db	'Multiplicacion: ', 0h
-	div	db	'Division: ', 0h
+	divi		db	'Division: ', 0h
 
-SECTION: .text
+SECTION .text
 	global _start
 
 _start:
