@@ -1,0 +1,35 @@
+     1                                  extern  printf
+     2                                  
+     3                                  SECTION .data
+     4 00000000 0000000000001440            base:       dq  5.0
+     5 00000008 0000000000002440            altura:     dq  10.0
+     6 00000010 41726561203D202566-         format:     db  "Area = %f", 10, 0
+     6 00000019 0A00               
+     7                                  
+     8                                  SECTION .bss
+     9 00000000 ????????????????            area:       resq    1
+    10                                  
+    11                                  SECTION .text
+    12                                  
+    13                                  global  main
+    14                                  
+    15                                  main:
+    16 00000000 55                          push    rbp
+    17 00000001 DD0425[00000000]            fld     qword [base]     ; carga la base en el registro ST0
+    18 00000008 DD0425[08000000]            fld     qword [altura]   ; carga la altura en el registro ST1
+    19 0000000F DEC9                        fmul                    ; ST0 = base * altura
+    20 00000011 DD1C25[00000000]            fstp    qword [area]     ; guarda el resultado en el registro ST0
+    21                                  
+    22 00000018 48BF-                       mov     rdi, format      ; cadena con formato de impresion
+    22 0000001A [1000000000000000] 
+    23 00000022 F30F7E0425-                 movq    xmm0, qword [area]  ; parametro de coma flotante area
+    23 00000027 [00000000]         
+    24 0000002B B801000000                  mov     rax, 1          ; numero de parametros de coma flotante
+    25                                  
+    26 00000030 E8(00000000)                call    printf
+    27                                  
+    28 00000035 5D                          pop     rbp
+    29 00000036 B83C000000                  mov     rax, 60         ; syscall para salir del programa
+    30 0000003B 4831DB                      xor     rbx, rbx        ; codigo de retorno 0
+    31 0000003E 0F05                        syscall
+    32                                      

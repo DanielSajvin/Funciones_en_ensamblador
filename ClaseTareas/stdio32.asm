@@ -217,6 +217,8 @@ Input:
     ret
 
 ;----------------Conversion------------------------
+
+;----------------PASAR UNA CADENA A UN ENTERO------------
 cadena_a_entero:
     .copia_s:
         push        edx
@@ -260,7 +262,7 @@ cadena_a_entero:
         pop     edx
     ret
 
-
+;---------------PASAR UN ENTERO A CADENA--------------
 entero_a_cadena:
     .copia_s:
         push        edx

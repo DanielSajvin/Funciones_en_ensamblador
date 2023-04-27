@@ -1,30 +1,40 @@
 ; Manejo de valores de coma flotante
-; Creador: Sjvn
-; Fecha: 21/04/2023
+; creador: sjvn
+; fecha: 21/04/2023
+; compilar: nasm -f elf64 flotante.asm -l flotante.lst
+; link:	gcc -m64 flotante.o -o flotante -no-pie
 
-SECTION .data
-    pi      dq      3.14159
-    radio   dq      5.0
-    buf     db      64
-    format  db      "%f", 10, 0
+extern	printf
 
-SECTION .text
-    extern  printf
-    global _start
+SECTION	.data
+	pi:	dq	3.14159
+	radio:	dq	5.0
+	format:	db	"C = ¶*R = %f * %f = %f", 10, 0
 
-_start:
-    fld     qword   [radio]     ;carga el radio al registro ST0
-    fld     qword   [pi]        ;carga pi al registro ST1
-    fmul                        ;multiplica los valores de st0 y st1
-    fstp    qword   [radio]     ;guarda el resultado en el registro st0
+SECTION	.bss
+	c:	resq	1
 
-    fistp   qword   [esp]       ;copia el valor de st0 a formato entero
-    push    dword   format
-    push    dword   buf
-    call    printf
+SECTION	.text
 
-    add     esp, 8              ;limpiar la pila
+	global	main
 
-    mov     eax, 1
-    xor     ebx, ebx
-    int     80h 
+main:
+	push	rbp
+	fld	qword [radio]		;carga el radio al registro ST0
+	fmul	qword [pi]		;radio * pi
+	fstp	qword [c]		;guarda el resultado en el registro ST0
+
+	mov	rdi,format		;cadena con formato de impresion
+	movq	xmm0, qword [pi]	;1er. parametro de coma flotante pi
+	movq	xmm1, qword [radio]	;2o. parametro de coma flotante radio
+	movq	xmm2, qword [c]		;3er. parametro de coma flotante C
+	mov	rax, 3			;numero de parametros de coma flotante
+
+	call	printf
+
+	pop	rbp
+
+	mov	rax, 1
+	xor	rbx, rbx
+	int	80h
+    
