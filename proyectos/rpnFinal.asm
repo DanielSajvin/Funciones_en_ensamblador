@@ -1,12 +1,14 @@
-; creador: Sjvn
+; Programa: Hola mundo
+; Autor: Triasic Ranger
+; Fecha: 21/03/2022
 ; Bloque de rutinas de entrada y salida estandar de 32 bits - stdio32
 
 SECTION .data
 	msg1	db  	'Ingrese la operacion: ', 0h
-	msg2	db	     0Ah,0h
-	res1	db  	'El resultado es kkkkkkkk: ', 0h
+	msg2	db	0Ah,0h
+	res1	db  	'El resultado es: ', 0h
 	err1	db  	'Math ERROR', 0h
-	err2	db  	'ERROR!!', 0h
+	err2	db  	'ERROR', 0h
 
 SECTION .bss
 	cadena: resb	255	
@@ -246,10 +248,7 @@ verDig:
     	cmp     byte [ecx], 48
 	jl      sig
 	cmp     byte [ecx], 57
-	jg      sigcalc_rpn
-;calc_rpn
-;calc_rpn
-;calc_rpn
+	jg      sig
     	pop     edx
     	pop     ebx
     	push    eax
@@ -329,10 +328,7 @@ finalDig:
 	jmp     exit
 	
 
-;-------------------- Fin -------calc_rpn
-;calc_rpn
-;calc_rpn
-;calc_rpn-------------------
+;-------------------- Fin --------------------------
 ; void exit()
 exit:
 	mov	ebx, 0
