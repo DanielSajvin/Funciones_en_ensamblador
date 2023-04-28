@@ -322,8 +322,8 @@ mathError:
 ;------ Imprimir resultado--------------
 finalDig:
 	mov     eax, res1
-    	call    printStr
-    	pop     eax
+    call    printStr
+    pop     eax
 	call	printInt
 	jmp     exit
 	
